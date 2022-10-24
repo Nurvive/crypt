@@ -1,0 +1,13 @@
+{
+  "name": "crypt",
+  "version": "1.0.0",
+  "description": "",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js --max-call-stack=100000000000"
+  },
+  "author": "",
+  "license": "ISC"
+}
