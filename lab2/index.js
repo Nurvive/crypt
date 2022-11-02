@@ -12,7 +12,7 @@ export const shamir = (m = 0) => {
     // while (!isPrime(p)) {
     //     p = 2 * generateRandomPrime(m) + 1;
     // }
-    //
+
     let p = 23; // TODO Не пашет
 
     // let p = generateRandomPrime(m + 1);
@@ -22,25 +22,33 @@ export const shamir = (m = 0) => {
         Ca = getRandomInt();
     }
     let Da = evclidGCD(Ca, x).x;
+    if (Da < 0) {
+        Da += x;
+    }
     let Cb = getRandomInt();
     while (evclidGCD(Cb, x).gcd !== 1) {
         Cb = getRandomInt();
     }
     let Db = evclidGCD(Cb, x).x;
+    if (Db < 0) {
+        Db += x;
+    }
+
     Ca = BigInt(Ca);
     Cb = BigInt(Cb);
     Da = BigInt(Da);
     Db = BigInt(Db);
     p = BigInt(p);
+    console.log('sgsg')
     const x1 = pow(BigInt(m), Ca, p);
-    // const x2 = pow(x1, Cb, p);
-    // const x3 = pow(x2, Da, p);
-    // const x4 = pow(x3, Db, p);
-    //
-    // return {
-    //     m,
-    //     x4
-    // };
+    const x2 = pow(x1, Cb, p);
+    const x3 = pow(x2, Da, p);
+    const x4 = pow(x3, Db, p);
+
+    return {
+        m,
+        x4
+    };
 };
 
 export const elGamal = (m = 0) => {

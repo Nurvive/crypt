@@ -4,4 +4,4 @@ import {evclidGCD, pow} from './lab1/index.js';
 import {degreesTwo} from './lab1/utils.js';
 
 // console.log(evclidGCD(7, 22))
-console.log(RSA(10))
+console.log(shamir(10))
