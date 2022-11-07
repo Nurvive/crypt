@@ -1,14 +1,21 @@
-import {degreesTwo, generateRandomPrime, getRandomInt, isPrime, generateI, generateJ} from './utils.js';
+import {degreesTwo, generateRandomPrime, getRandomInt, isPrime, generateI, generateJ} from '../utils.js';
 
 export const pow = (base = 1n, power = 0n, module = 2n) => {
-    let result = 1n;
-    const degrees = degreesTwo(power.toString(2));
-    degrees.forEach((degree) => {
-        const pw = (2n ** degree);
-        result *= (base ** pw) % module;
-    });
-    result %= module;
-    return result;
+    if (base < 0 || power < 0 || module <= 0) {
+        throw new Error('Negative numbers and module=0 are not supported');
+    }
+    if (module === 1n) {
+        return 0n;
+    }
+    let y = 1n;
+    while (power !== 0n) {
+        if ((power & 1n) === 1n) {
+            y = (y * base) % module;
+        }
+        base = (base * base) % module;
+        power >>= 1n;
+    }
+    return y;
 };
 
 export const evclidGCD = (a = 1, b = 1) => {

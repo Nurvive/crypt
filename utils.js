@@ -1,4 +1,7 @@
-import {evclidGCD, pow} from './index.js';
+import {evclidGCD, pow} from './lab1/index.js';
+import fs from 'fs';
+import {elGamal} from './lab2/index.js';
+import {signRSA} from './lab3/index.js';
 
 export const degreesTwo = (value) => {
     const result = [];
@@ -9,7 +12,6 @@ export const degreesTwo = (value) => {
     });
     return result;
 };
-
 
 export const generateCoprime = (p, min = 0, max = 1000000000) => {
     let result = generateRandomPrime(min, max);
@@ -57,6 +59,24 @@ export const generateRandomBinary = (length) => {
     return result;
 };
 
+export function shuffle(array) {
+    let currentIndex = array.length,  randomIndex;
+
+    // While there remain elements to shuffle.
+    while (currentIndex !== 0) {
+
+        // Pick a remaining element.
+        randomIndex = Math.floor(Math.random() * currentIndex);
+        currentIndex--;
+
+        // And swap it with the current element.
+        [array[currentIndex], array[randomIndex]] = [
+            array[randomIndex], array[currentIndex]];
+    }
+
+    return array;
+}
+
 export const isPrime = (n) => {
     for (let i = 2; i < Math.ceil(Math.sqrt(n)); i++) {
         if (n % i === 0) {
@@ -66,8 +86,7 @@ export const isPrime = (n) => {
     return true;
 };
 
-
-export const generateRandomPrime = (min = 0, max = 1000000000) => {
+export const generateRandomPrime = (min = 0, max = 10000000) => {
     let q = getRandomInt(min, max);
     while (!isPrime(q)) {
         q = getRandomInt(min, max);
@@ -99,4 +118,60 @@ export const generateJ = (a, m, k, p) => {
 
 export function getRandomInt(min = 0, max = 1000000000) {
     return Math.floor(Math.random() * (max - min)) + min; //Максимум не включается, минимум включается
+}
+
+export function hashString(key) {
+    let hash = 0;
+    for (let i = 0; i < key.length; ++i) {
+        hash += key.charCodeAt(i);
+        hash += (hash << 10);
+        hash ^= (hash >> 6);
+    }
+    hash += (hash << 3);
+    hash ^= (hash >> 11);
+    hash += (hash << 15);
+    return Math.abs(hash);
+}
+
+export const generateP = () => {
+
+}
+
+export const filesCrypt = (cryptFunction) => {
+    const img = fs.readFileSync('jojo.jpg');
+    const encryptedImg = new Uint32Array(img.length);
+    const decryptedImg = new Uint8Array(img.length);
+
+    img.forEach((byte, index) => {
+        const res = cryptFunction(byte);
+        decryptedImg[index] = Number(res.m1);
+        if (byte !== Number(res.m1)) {
+            console.error(res);
+            throw new Error('qwerty');
+        }
+        encryptedImg[index] = Number(res.e);
+    });
+    fs.writeFile('djojo.jpg', Buffer.from(decryptedImg), (err) => {
+        if (!err) {
+            console.log('Data written');
+        } else {
+            console.log(err);
+        }
+    });
+
+    fs.writeFile('ejojo.crypt', Buffer.from(encryptedImg.buffer), (err) => {
+        if (!err) {
+            console.log('Data written');
+        } else {
+            console.log(err);
+        }
+    });
+};
+
+export const filesSign = () => {
+    const txt = fs.readFileSync('doc.txt');
+    const txtArray = new Uint8Array(txt);
+    const message = txtArray.toString().split(',').join('');
+    const res = signRSA(message);
+    console.log(Number(res.w) === hashString(message));
 }

@@ -3,19 +3,10 @@ import {
     pow,
 } from '../lab1/index.js';
 
-import {generateRandomBinary, isPrime, generateRandomPrime, generateCoprime, getRandomInt} from '../lab1/utils.js';
+import {generateRandomBinary, isPrime, generateRandomPrime, generateCoprime, getRandomInt} from '../utils.js';
 
 export const shamir = (m = 0) => {
-    // const q = generateRandomPrime(m);
-    // let p = 2 * q + 1;
-    //
-    // while (!isPrime(p)) {
-    //     p = 2 * generateRandomPrime(m) + 1;
-    // }
-
-    let p = 23; // TODO Не пашет
-
-    // let p = generateRandomPrime(m + 1);
+    let p = generateRandomPrime(m + 1);
     const x = p - 1;
     let Ca = getRandomInt();
     while (evclidGCD(Ca, x).gcd !== 1) {
@@ -33,29 +24,27 @@ export const shamir = (m = 0) => {
     if (Db < 0) {
         Db += x;
     }
-
     Ca = BigInt(Ca);
     Cb = BigInt(Cb);
     Da = BigInt(Da);
     Db = BigInt(Db);
     p = BigInt(p);
-    console.log('sgsg')
     const x1 = pow(BigInt(m), Ca, p);
     const x2 = pow(x1, Cb, p);
     const x3 = pow(x2, Da, p);
     const x4 = pow(x3, Db, p);
-
     return {
         m,
-        x4
+        e: x3,
+        m1: x4
     };
 };
 
 export const elGamal = (m = 0) => {
-    let q = generateRandomPrime();
+    let q = generateRandomPrime(m);
     let p = 2 * q + 1;
     while (!isPrime(p)) {
-        q = generateRandomPrime();
+        q = generateRandomPrime(m);
         p = 2 * q + 1;
     }
     let g = getRandomInt(2, p - 2);
@@ -63,40 +52,40 @@ export const elGamal = (m = 0) => {
         g = getRandomInt(2, p - 2);
     }
     g = BigInt(g);
-    const x = BigInt(getRandomInt(2, p - 1));
+    const Cb = BigInt(getRandomInt(2, p - 1));
     const k = BigInt(getRandomInt(2, p - 2));
     p = BigInt(p);
-    const y = pow(g, x, p);
-    const a = pow(g, k, p);
-    const b = (BigInt(m) * pow(y, k, p)) % p;
-    const m1 = (b * pow(a, (p - 1n - x), p)) % p;
+    const Db = pow(g, Cb, p);
+    const r = pow(g, k, p);
+    const e = (BigInt(m) * pow(Db, k, p)) % p;
+
+    const m1 = (e * pow(r, (p - 1n - Cb), p)) % p;
     return {
-        m, m1
+        m, m1, e
     };
 };
 
 export const RSA = (m = 0) => {
-    const q = 11; // TODO Не пашет
-    // const q = generateRandomPrime(m + 1);
-    const p = generateRandomPrime(2);
-    // let p = 3;
+    const q = generateRandomPrime(m + 1);
+    const p = generateRandomPrime(m + 1);
     const N = p * q;
     const f = (p - 1) * (q - 1);
-    let d = generateCoprime(f, 1, f)
+    let d = generateCoprime(f, 1, f - 1);
     let c = evclidGCD(d, f).y;
     if (c * d % f !== 1) {
-        c = evclidGCD(d, f).x
+        c = evclidGCD(d, f).y;
     }
-    console.log(c);
-    console.log(c * d % f);
+    if (c < 0) {
+        c += f
+    }
     const e = pow(BigInt(m), BigInt(d), BigInt(N));
     const m1 = pow(BigInt(e), BigInt(c), BigInt(N));
     return {
-        m, m1
+        m, e, m1
     };
 };
 
-export const verner = (m = 0) => {
+export const vernam = (m = 0) => {
     const message = m.toString(2).split('');
     const key = generateRandomBinary(message.length);
     const crypt = [];
@@ -107,8 +96,9 @@ export const verner = (m = 0) => {
     for (let i = 0; i < message.length; i++) {
         decrypt.push(String(Number(crypt[i]) ^ Number(key[i])));
     }
+    const e = parseInt(crypt.join(''), 2);
     const m1 = parseInt(decrypt.join(''), 2);
     return {
-        m, m1
+        m, e, m1
     };
 };

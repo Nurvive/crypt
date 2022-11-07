@@ -9,5 +9,6 @@
     "start": "node index.js --max-call-stack=100000000000"
   },
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {}
 }
