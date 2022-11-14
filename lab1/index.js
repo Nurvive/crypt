@@ -19,14 +19,24 @@ export const pow = (base = 1n, power = 0n, module = 2n) => {
 };
 
 export const evclidGCD = (a = 1, b = 1) => {
-    if (b > a) {
-        [a, b] = [b, a];
-    }
     let U = [a, 1, 0];
     let V = [b, 0, 1];
     let T = [];
     let q = 0;
     while (V[0] > 0) {
+        q = Math.floor(U[0] / V[0]);
+        T = [U[0] % V[0], U[1] - q * V[1], U[2] - q * V[2]];
+        U = V;
+        V = T;
+    }
+    return {gcd: U[0], x: U[1], y: U[2]};
+};
+export const bevclidGCD = (a = 1n, b = 1n) => {
+    let U = [a, 1n, 0n];
+    let V = [b, 0n, 1n];
+    let T = [];
+    let q = 0n;
+    while (V[0] > 0n) {
         q = Math.floor(U[0] / V[0]);
         T = [U[0] % V[0], U[1] - q * V[1], U[2] - q * V[2]];
         U = V;

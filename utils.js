@@ -21,7 +21,7 @@ export const generateCoprime = (p, min = 0, max = 1000000000) => {
     return result;
 };
 
-function generateRandomBigInt(lowBigInt = 0n, highBigInt = 1000000000n) {
+export function generateRandomBigInt(lowBigInt = 0n, highBigInt = 1000000000n) {
     if (lowBigInt >= highBigInt) {
         throw new Error('lowBigInt must be smaller than highBigInt');
     }
@@ -42,7 +42,7 @@ function generateRandomBigInt(lowBigInt = 0n, highBigInt = 1000000000n) {
     return lowBigInt + randomDifference;
 }
 
-const isPrimeBig = (n) => {
+export const isPrimeBig = (n) => {
     for (let i = 2n; i < n; i++) {
         if (n % i === 0n) {
             return false;
@@ -56,6 +56,7 @@ export const generateRandomBinary = (length) => {
     for (let i = 0; i < length; i++) {
         result.push(String(Math.round(Math.random())));
     }
+    result[0] = '1';
     return result;
 };
 
