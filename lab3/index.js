@@ -70,24 +70,21 @@ export const SignElGamal = (m) => {
 };
 
 export const gost = (m = '') => {
-    let q = BigInt('0b' + generateRandomBinary(256).join(''));
-    while (!isPrimeBig(q)) {
-        console.log(q);
-        q = BigInt('0b' + generateRandomBinary(256).join(''));
-    }
-    let p = BigInt('0b' + generateRandomBinary(1024).join(''));
-    let b = (p - 1n) / q;
-    if (!Number.isInteger(b)) {
-        q = BigInt('0b' + generateRandomBinary(256).join(''));
-        p = BigInt('0b' + generateRandomBinary(1024).join(''));
-    }
-    let a = generateRandomBigInt(1n, q);
+    const b = BigInt(getRandomInt())
+    let q = BigInt(generateRandomPrime())
+    // let q = BigInt('0b' + generateRandomBinary(256).join(''));
+    // const b = BigInt('0b' + generateRandomBinary(1024).join(''))
+    // while (!isPrimeBig(q)) {
+    //     q = BigInt('0b' + generateRandomBinary(256).join(''));
+    // }
+    let p = q * b + 1n;
+    let a = BigInt(getRandomInt(1, Number(q)));
     while (pow(a, q, p) !== 1n) {
-        a = generateRandomBigInt(1n, q);
+        a = BigInt(getRandomInt(1, Number(q)));
     }
     const x = BigInt(getRandomInt(1));
     const y = pow(a, x, p);
-    const h = BigInt(hashString(String(m)));
+    let h = BigInt(hashString(String(m)));
     let k = BigInt(getRandomInt());
     let r = pow(a, k, p) % q;
     let s = (k * h + x * r) % q;
@@ -98,14 +95,20 @@ export const gost = (m = '') => {
     }
     if (r <= 0 || r >= q || s <= 0 || s >= q) {
         console.log('1 false');
+        return;
     }
-    let _h = bevclidGCD(h, q).x
-    while (bevclidGCD(h, q).gcd !== 1n) {
-        _h = bevclidGCD(h, q).x
+    h = Number(h)
+    let _h = evclidGCD(h, Number(q)).x
+    while (evclidGCD(h, Number(q)).gcd !== 1) {
+        _h = evclidGCD(h, Number(q)).x
     }
+    _h = BigInt(_h)
     const u1 = s * _h % q;
-    const u2 = -r * _h % q;
+    let u2 = -r * _h % q;
     const au1 = pow(a, u1, p);
+    if (u2 < 0) {
+        u2 += p
+    }
     const yu2 = pow(a, u2, p);
     const u = au1 * yu2 % p % q;
     console.log(u === r);

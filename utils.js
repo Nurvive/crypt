@@ -117,7 +117,7 @@ export const generateJ = (a, m, k, p) => {
     return result;
 };
 
-export function getRandomInt(min = 0, max = 1000000000) {
+export function getRandomInt(min = 0, max = 100000000) {
     return Math.floor(Math.random() * (max - min)) + min; //Максимум не включается, минимум включается
 }
 
@@ -174,5 +174,7 @@ export const filesSign = () => {
     const txtArray = new Uint8Array(txt);
     const message = txtArray.toString().split(',').join('');
     const res = signRSA(message);
+    console.log(res)
+    console.log(hashString(message))
     console.log(Number(res.w) === hashString(message));
 }
