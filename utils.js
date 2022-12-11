@@ -13,7 +13,7 @@ export const degreesTwo = (value) => {
     return result;
 };
 
-export const generateCoprime = (p, min = 0, max = 1000000000) => {
+export const generateCoprime = (p, min = 0, max = 100000) => {
     let result = generateRandomPrime(min, max);
     while (evclidGCD(result, p).gcd !== 1) {
         result = generateRandomPrime(min, max);
@@ -87,7 +87,7 @@ export const isPrime = (n) => {
     return true;
 };
 
-export const generateRandomPrime = (min = 0, max = 10000000) => {
+export const generateRandomPrime = (min = 0, max = 1000000) => {
     let q = getRandomInt(min, max);
     while (!isPrime(q)) {
         q = getRandomInt(min, max);
