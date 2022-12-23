@@ -2,10 +2,10 @@ import {generateCoprime, generateRandomPrime, getRandomInt} from '../utils.js';
 
 class Client {
     constructor(N) {
-        this.s = getRandomInt();
+        this.s = generateCoprime(N);
         this.V = this.s ** 2 % N;
-        // this.r = getRandomInt(1, N - 1);
-        this.r = 38177;
+        this.r = getRandomInt(1, N - 1);
+        // this.r = 38177;
         this.N = N;
     }
 
@@ -18,17 +18,17 @@ class Client {
     }
 
     getY() {
-        this.y = this.r * (this.s ** this.e) % this.N;
+        this.y = (this.r * (this.s ** this.e)) % this.N;
         return this.y;
     }
 }
 
 class Server {
     constructor() {
-        // const q = generateRandomPrime(1);
-        const q = 683;
-        // const p = generateRandomPrime(1);
-        const p = 811;
+        const q = generateRandomPrime(1, 100000);
+        // const q = 683;
+        const p = generateRandomPrime(1, 100000);
+        // const p = 811;
         this.N = p * q;
     }
 
